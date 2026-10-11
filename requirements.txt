@@ -1,5 +1,5 @@
-streamlit>=1.30
-numpy>=1.23,<2.0
+streamlit>=1.50
+numpy>=1.26
 pandas>=1.5
-matplotlib>=3.6
+altair>=5
 tensorflow>=2.16,<2.21

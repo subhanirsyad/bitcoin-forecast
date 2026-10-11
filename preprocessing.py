@@ -36,7 +36,7 @@ def _detect_and_set_time_index(df: pd.DataFrame) -> pd.DataFrame:
     time_candidates = [c for c in df.columns if c.lower() in ["date", "datetime", "timestamp", "time", "open_time", "close_time"]]
     if time_candidates:
         time_col = time_candidates[0]
-        df[time_col] = pd.to_datetime(df[time_col], errors="coerce", utc=True)
+        df[time_col] = pd.to_datetime(df[time_col], errors="coerce", utc=True, format="mixed")  # CSV mencampur format dengan dan tanpa milidetik (.000)
         df = df.dropna(subset=[time_col]).sort_values(time_col).reset_index(drop=True)
         df = df.set_index(time_col)
         return df

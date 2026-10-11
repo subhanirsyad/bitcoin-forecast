@@ -10,13 +10,22 @@ Aplikasi **Streamlit** untuk demo **prediksi harga penutupan (Close) Bitcoin** m
 
 ## Fitur
 - Sumber data fleksibel: **default CSV** (link publik) atau **upload CSV**
-- Pilih 3 model pre-trained:
-  - `best_model_seq2seq_LSTM.keras` (recommended)
-  - `model_seq2seq_LSTM.keras`
-  - `model_baseline_LSTM.keras`
+- Pilih model pre-trained: **Seq2Seq LSTM + Attention** (`best_model_seq2seq_LSTM.keras`) atau **Baseline LSTM** (`model_baseline_LSTM.keras`)
 - Forecast **24 step ke depan** berdasarkan **window 168 step terakhir**
+- Model memprediksi **perubahan harga (%) dibanding harga terakhir**, lalu app mengubahnya kembali ke harga
 - Visualisasi grafik + tabel hasil
-- Export hasil prediksi ke `forecast.csv`
+- Export hasil prediksi ke `btc_forecast_24h.csv`
+
+## Akurasi
+Rata-rata selisih harga prediksi vs harga asli untuk 24 jam ke depan, di data test 22 Nov 2022 sampai 19 Okt 2023 (7.757 window):
+
+| Model | MAE (USDT) | Dibanding tebakan naif |
+|---|---|---|
+| Tebakan naif (harga tidak berubah) | 238 | 1,00× |
+| Baseline LSTM | 239 | 1,01× |
+| Seq2Seq LSTM + Attention | 242 | 1,02× |
+
+Kedua model hampir sama akuratnya dengan tebakan naif, jadi prediksinya belum bisa dipakai sebagai sinyal trading.
 
 ## Jalankan secara lokal
 
@@ -40,7 +49,7 @@ streamlit run streamlit_app.py
 ### 3) Cara pakai
 1. Pilih sumber data (default / upload CSV)
 2. Pilih model
-3. Klik **🚀 Jalankan Forecast**
+3. Klik **Prediksi 24 jam**
 4. Unduh hasil prediksi jika diperlukan
 
 ## Format CSV yang didukung
@@ -58,10 +67,11 @@ Kolom tambahan seperti `Open`, `High`, `Low`, `Volume` akan otomatis dipakai jik
    - **Repository**: repo kamu
    - **Branch**: `main`
    - **Main file path (Entrypoint)**: `streamlit_app.py`
-4. Klik **Deploy**
+4. Buka **Advanced settings**, pilih **Python 3.11 atau 3.12**
+5. Klik **Deploy**
 
 Catatan:
-- Repo ini sudah menyertakan `requirements.txt` dan `runtime.txt` (Python 3.11) agar lebih stabil saat deploy.
+- Streamlit Cloud **tidak membaca `runtime.txt`**. Versi Python hanya bisa dipilih saat deploy (langkah 4); untuk app yang sudah ada, hapus lalu deploy ulang. TensorFlow belum tersedia untuk Python 3.14.
 - Pertama kali deploy bisa agak lama karena install **TensorFlow**.
 
 ## Struktur project
@@ -73,7 +83,7 @@ Catatan:
 ├─ models/                     # Model pre-trained (.keras)
 ├─ notebook.ipynb              # Notebook training/eksperimen (referensi)
 ├─ requirements.txt            # Dependency Python
-├─ runtime.txt                 # Pin Python version (Streamlit Cloud)
+├─ runtime.txt                 # Python 3.11 (referensi, tidak dibaca Streamlit Cloud)
 └─ .streamlit/config.toml      # Konfigurasi tema Streamlit
 ```
 
